@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            background: linear-gradient(to bottom right, #3498db, #e74c3c);
+            color: #fff;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f2f2f2;
+            cursor: pointer;
+            color: #000;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .modal h2 {
+            margin: 0;
+        }
+        .modal button {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div class="container" id="board">
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+        <div class="cell" data-cell></div>
+    </div>
+    <p id="status">Player X's turn</p>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="result">Result</h2>
+            <button id="new-game">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('[data-cell]');
+        const status = document.getElementById('status');
+        const modal = document.getElementById('modal');
+        const result = document.getElementById('result');
+        const newGameButton = document.getElementById('new-game');
+        let xTurn = true;
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', handleClick, { once: true });
+        });
+
+        function handleClick(e) {
+            const cell = e.target;
+            const currentPlayer = xTurn ? 'X' : 'O';
+
+            cell.textContent = currentPlayer;
+
+            if (checkWin(currentPlayer)) {
+                endGame(`Player ${currentPlayer} wins!`);
+            } else if (isDraw()) {
+                endGame('It\'s a draw!');
+            } else {
+                xTurn = !xTurn;
+                status.textContent = `Player ${xTurn ? 'X' : 'O'}'s turn`;
+            }
+        }
+
+        function checkWin(player) {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            return winPatterns.some(pattern => {
+                return pattern.every(index => cells[index].textContent === player);
+            });
+        }
+
+        function isDraw() {
+            return [...cells].every(cell => cell.textContent !== '');
+        }
+
+        function endGame(message) {
+            result.textContent = message;
+            modal.style.display = 'flex';
+        }
+
+        newGameButton.addEventListener('click', () => {
+            cells.forEach(cell => cell.textContent = '');
+            modal.style.display = 'none';
+            xTurn = true;
+            status.textContent = "Player X's turn";
+        });
+    </script>
+</body>
+</html>
