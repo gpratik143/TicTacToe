@@ -1,2 +1,2 @@
 # TicTacToe
-## here is a tictactoe app with source code
+## Here is a tictactoe app with source code
